@@ -31,6 +31,7 @@ if !File.exist? '.config'
     end
 end
 userdata = File.open(".config", "r").to_a
+userdata.map! {|d| d.gsub!("\n", "")}
 fromwiki = userdata[2]
 importwiki = userdata[3]
 importcat = userdata[5]
