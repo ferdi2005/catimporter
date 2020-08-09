@@ -36,8 +36,8 @@ importwiki = userdata[3]
 importcat = userdata[5]
 
 # Funzione per ottenere i membri della categoria
-def getcatmembers(cat)
-    pagelist = HTTParty.get("#{fromwiki}?action=query&list=categorymembers&cmtitle=#{cat}&format=json&cmlimit=max", uri_adapter: Addressable::URI).to_a
+def getcatmembers(cat, fromwiki)
+    pagelist = HTTParty.get("#{fromwiki}?action=query&list=categorymembers&cmtitle=#{CGI.escape(cat)}&format=json&cmlimit=max", uri_adapter: Addressable::URI).to_a
     unless pagelist.empty?
         if pagelist[2].nil?
             pagelist = pagelist[1][1]['categorymembers']
@@ -50,7 +50,7 @@ def getcatmembers(cat)
             unless pagelist.nil?
             while continue == '-||'
                 puts 'Ottengo la continuazione della categoria...'
-                new_pagelist = HTTParty.get(fromwiki, query: {action: :query, list: :categorymembers, cmtitle: cat, cmlimit: 500, cmdir: :newer, cmcontinue: cmcontinue, format: :json }, uri_adapter: Addressable::URI).to_a
+                new_pagelist = HTTParty.get(fromwiki, query: {action: :query, list: :categorymembers, cmtitle: CGI.escape(cat), cmlimit: 500, cmdir: :newer, cmcontinue: cmcontinue, format: :json }, uri_adapter: Addressable::URI).to_a
                 unless new_pagelist.nil?
                 if new_pagelist[2].nil?
                     new_pagelist = new_pagelist[1][1]['categorymembers']
@@ -71,13 +71,12 @@ def getcatmembers(cat)
         return pagelist
     end
 end
-
 # recupera la lista delle categorie con pagine da cancellare
-catlist = HTTParty.get("#{fromwiki}?action=query&list=categorymembers&cmtitle=#{importcat}&format=json&cmlimit=max", uri_adapter: Addressable::URI).to_a[2][1]['categorymembers']
+catlist = HTTParty.get("#{fromwiki}?action=query&list=categorymembers&cmtitle=#{CGI.escape(importcat)}&format=json&cmlimit=max", uri_adapter: Addressable::URI).to_a[2][1]['categorymembers']
 catlist.reject! { |cat| cat["ns"] != 14 }
 totalcontain = []
 catlist.each do |cat|
-    getcatmembers(cat["title"]).each do |page|
+    getcatmembers(cat["title"], fromwiki).each do |page|
         totalcontain.push(page)
     end
 end
@@ -88,7 +87,7 @@ totalcontain.each { |tc| count += 1 if tc["ns"] == 14}
 while(count > 0)
     totalcontain.each do |tc|
         if tc["ns"] == 14
-            getcatmembers(tc["title"]).each do |page|
+            getcatmembers(tc["title"], fromwiki).each do |page|
                 totalcontain.push(page)
             end
             totalcontain.delete(tc)
@@ -99,11 +98,11 @@ while(count > 0)
 end
 
 # Rimuove le voci già sul wiki dall'array
-totalcontain.reject! { |page| HTTParty.get(importwiki + '?action=query&list=search&srsearch="' + page["title"] + '"&format=json&srlimit=max&srwhat=title', uri_adapter: Addressable::URI).to_a[2][1]["searchinfo"]["totalhits"] > 0}
-
+totalcontain.reject! { |page| HTTParty.get(importwiki + '?action=query&list=search&srsearch="' + CGI.escape(page["title"]) + '"&format=json&srlimit=max&srwhat=title', uri_adapter: Addressable::URI).to_a[2][1]["searchinfo"]["totalhits"] > 0}
 # Importa la voce nel wiki, funziona solo se c'è un interwiki a Wikipedia in Italiano con w, modificabile secondo necessità
 client = MediawikiApi::Client.new importwiki
 client.log_in "#{userdata[0]}", "#{userdata[1]}"
 totalcontain.each do |page|
-    client.action(:import, summary: "Importazione della pagina #{page["title"]} #ImportCatBot", interwikiprefix: userdata[4], interwikipage: page["title"], fullhistory: true, template: true)
+    puts "Importo pagina #{page["title"]}"
+    client.action(:import, summary: "Importazione della pagina #{page["title"]} #ImportCatBot", interwikiprefix: userdata[4], interwikipage: CGI.escape(page["title"]), fullhistory: true, template: true)
 end
