@@ -1,5 +1,4 @@
 source 'https://rubygems.org'
-gem 'daemons'
 gem 'httparty'
 gem 'addressable'
 gem 'mediawiki_api'

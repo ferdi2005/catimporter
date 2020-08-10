@@ -4,12 +4,8 @@ Importa una categoria (con relative sottocategorie) da una wiki all'altra.
 Avere installato Ruby e [bundler](https://bundler.io), dare `bundle install`. Tutte le dipendenze saranno così installate.
 ## Configurazione
 Eseguite lo script chiamato `process.rb` (per esempio, col comando `$ ruby process.rb`) vi verranno richiesti alcuni parametri fondamentali che verranno salvati in un file chiamato .config e ripresi automaticamente alle successive esecuzioni.
-## Daemonizzare
-Per rendere lo script in continua esecuzione (facendolo diventare un daemon) e controllarlo, è possibile usare i seguenti comandi ereditati dalla gem [daemons](https://github.com/thuehlinger/daemons):
+## Eseguire ciclicamente
+Potete aggiungere lo script alla crontab, chiedendo `which ruby` ed inserendo in crontab una cosa del genere (sostituendo user col nome del vostro utente, /usr/bin/ruby col risultato di which ruby e directory col path allo script):
 ```
-$ ruby bot.rb start
-    (process.rb is now running in the background)
-$ ruby bot.rb restart
-    (...)
-$ ruby bot.rb stop
+0 1 * * * user /usr/bin/ruby /directory/process.rb
 ```
