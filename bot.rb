@@ -1,3 +1,3 @@
 require 'daemons'
 
-Daemons.run('trashop.rb')
+Daemons.run('process.rb')
