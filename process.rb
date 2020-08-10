@@ -105,5 +105,9 @@ client = MediawikiApi::Client.new importwiki
 client.log_in "#{userdata[0]}", "#{userdata[1]}"
 totalcontain.each do |page|
     puts "Importo pagina #{page["title"]}"
-    client.action(:import, summary: "Importazione della pagina #{page["title"]} #CatImporterBot", interwikiprefix: userdata[4], interwikisource: userdata[4], interwikipage: page["title"], fullhistory: true, templates: true)
+    begin
+        client.action(:import, summary: "Importazione della pagina #{page["title"]} #CatImporterBot", interwikiprefix: userdata[4], interwikisource: userdata[4], interwikipage: page["title"], fullhistory: true, templates: true)
+    rescue
+        puts "Pagina #{page["title"]} ha riscontrato un errore"
+    end
 end
