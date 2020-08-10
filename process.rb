@@ -1,4 +1,4 @@
-require 'HTTParty'
+require 'httparty'
 require 'addressable'
 require 'mediawiki_api'
 # Legge le credenziali e la wiki di destinazione
