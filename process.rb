@@ -98,11 +98,13 @@ while(count > 0)
     totalcontain.each { |tc| count += 1 if tc["ns"] == 14}
 end
 
-# Rimuove le voci già sul wiki dall'array
-totalcontain.reject! { |page| HTTParty.get(importwiki + '?action=query&list=search&srsearch="' + CGI.escape(page["title"]) + '"&format=json&srlimit=max&srwhat=title', uri_adapter: Addressable::URI).to_a[2][1]["searchinfo"]["totalhits"] > 0}
-# Importa la voce nel wiki, funziona solo se c'è un interwiki a Wikipedia in Italiano con w, modificabile secondo necessità
+# Effettua il login nell'api mediawiki
 client = MediawikiApi::Client.new importwiki
 client.log_in "#{userdata[0]}", "#{userdata[1]}"
+
+# Rimuove le voci già sul wiki dall'array
+totalcontain.reject! { |page| client.query(list: :search, srsearch: '"' + page["title"] + '"', srlimit: 1, srwhat: :title)["query"]["searchinfo"]["totalhits"] > 0}
+# Importa la voce nel wiki, funziona solo se c'è un interwiki a Wikipedia in Italiano con w, modificabile secondo necessità
 totalcontain.each do |page|
     puts "Importo pagina #{page["title"]}"
     begin
