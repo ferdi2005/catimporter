@@ -2,7 +2,7 @@ require 'httparty'
 require 'addressable'
 require 'mediawiki_api'
 # Legge le credenziali e la wiki di destinazione
-if !File.exist? '.config'
+if !File.exist? "#{__dir__}/.config"
     puts 'Inserisci username:'
     print '> '
     username = gets.chomp
@@ -21,7 +21,7 @@ if !File.exist? '.config'
     puts "Inserisci la categoria che contiene le pagine da importare (l'importazione è ricorsiva)"
     print '> '
     importcat = gets.chomp
-    File.open(".config", "w") do |file| 
+    File.open("#{__dir__}/.config", "w") do |file| 
       file.puts username
       file.puts password
       file.puts fromwiki
@@ -30,7 +30,7 @@ if !File.exist? '.config'
       file.puts importcat
     end
 end
-userdata = File.open(".config", "r").to_a
+userdata = File.open("#{__dir__}/.config", "r").to_a
 userdata.map! {|d| d.gsub!("\n", "")}
 fromwiki = userdata[2]
 importwiki = userdata[3]
