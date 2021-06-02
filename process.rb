@@ -103,7 +103,11 @@ client = MediawikiApi::Client.new importwiki
 client.log_in "#{userdata[0]}", "#{userdata[1]}"
 
 # Rimuove le voci già sul wiki dall'array
-totalcontain.reject! { |page| client.query(list: :search, srsearch: '"' + page["title"] + '"', srlimit: 1, srwhat: :title)["query"]["searchinfo"]["totalhits"] > 0}
+totalcontain.reject! { |page| client.query(list: :search, 
+                                           srsearch: '"' + page["title"] + '"',
+                                           srlimit: 1,
+                                           srwhat: :title)["query"]["searchinfo"]["totalhits"] > 0}
+
 # Importa la voce nel wiki, funziona solo se c'è un interwiki a Wikipedia in Italiano con w, modificabile secondo necessità
 totalcontain.each do |page|
     puts "Importo pagina #{page["title"]}"
@@ -115,7 +119,8 @@ totalcontain.each do |page|
                       interwikipage: page["title"],
                       fullhistory: true,
                       templates: true)
-    rescue
+    rescue => e
+        puts e
         puts "Pagina #{page["title"]} ha riscontrato un errore"
     end
 end
