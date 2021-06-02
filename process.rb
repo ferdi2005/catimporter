@@ -108,7 +108,13 @@ totalcontain.reject! { |page| client.query(list: :search, srsearch: '"' + page["
 totalcontain.each do |page|
     puts "Importo pagina #{page["title"]}"
     begin
-        client.action(:import, summary: "Importazione della pagina #{page["title"]} #CatImporterBot", interwikiprefix: userdata[4], interwikisource: userdata[4], interwikipage: page["title"], fullhistory: true, templates: true)
+        client.action(:import, 
+                      summary: "Importazione della pagina #{page["title"]} #CatImporterBot",
+                      interwikiprefix: userdata[4],
+                      interwikisource: userdata[4],
+                      interwikipage: page["title"],
+                      fullhistory: true,
+                      templates: true)
     rescue
         puts "Pagina #{page["title"]} ha riscontrato un errore"
     end
