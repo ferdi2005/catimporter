@@ -21,6 +21,17 @@ Eseguite lo script chiamato `process.rb` (per esempio, col comando `$ ruby proce
 vi verranno richiesti alcuni parametri fondamentali che verranno salvati 
 in un file chiamato .config e ripresi automaticamente alle successive esecuzioni.
 
+### Esempio configurazione
+
+```ini
+utente@nome_bot
+password_bot
+https://it.wikipedia.org/w/api.php
+https://wikitrash.miraheze.org/w/api.php
+wikipedia:it
+Categoria:Pagine_in_cancellazione_per_argomento
+```
+
 Se state eseguendo il programma avendo installato le dipendenze come utente,
 e' probabile dobbiate settare anche la variabile `$GEM_HOME` in modo che punti alla cartella
 di bundler.
