@@ -4,12 +4,12 @@ Importa una categoria (con relative sottocategorie) da una wiki all'altra.
 
 Lo script richiede Ruby.
 
-In particolare sono richiesti i moduli (gems)
+In particolare sono richieste le gem
 - `httparty`
 - `addressable`
 - `mediawiki_api`
 
-E' possibile installare e gestire le dipendenze usando [bundler](https://bundler.io): 
+È possibile installare e gestire le dipendenze usando [bundler](https://bundler.io): 
 
 ```console
 bundle install 				(systemwide)
@@ -21,21 +21,11 @@ Eseguite lo script chiamato `process.rb` (per esempio, col comando `$ ruby proce
 vi verranno richiesti alcuni parametri fondamentali che verranno salvati 
 in un file chiamato .config e ripresi automaticamente alle successive esecuzioni.
 
-### Esempio configurazione
-
-```ini
-utente@nome_bot
-password_bot
-https://it.wikipedia.org/w/api.php
-https://wikitrash.miraheze.org/w/api.php
-wikipedia:it
-Categoria:Pagine_in_cancellazione_per_argomento
-```
-
 Se state eseguendo il programma avendo installato le dipendenze come utente,
 e' probabile dobbiate settare anche la variabile `$GEM_HOME` in modo che punti alla cartella
 di bundler.
 
+Sembrerebbe **NON** essere possibile utilizzare un'utenza bot per l'importazione delle voci.
 
 ## Eseguire ciclicamente
 Potete aggiungere lo script alla crontab, chiedendo `which ruby` ed inserendo in crontab una cosa del genere (sostituendo user col nome del vostro utente, /usr/bin/ruby col risultato di which ruby e directory col path allo script):

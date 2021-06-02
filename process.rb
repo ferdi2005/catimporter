@@ -1,6 +1,7 @@
 require 'httparty'
 require 'addressable'
 require 'mediawiki_api'
+
 # Legge le credenziali e la wiki di destinazione
 if !File.exist? "#{__dir__}/.config"
     puts 'Inserisci username:'
@@ -30,6 +31,7 @@ if !File.exist? "#{__dir__}/.config"
       file.puts importcat
     end
 end
+
 userdata = File.open("#{__dir__}/.config", "r").to_a
 userdata.map! {|d| d.gsub!("\n", "")}
 fromwiki = userdata[2]
@@ -38,7 +40,8 @@ importcat = userdata[5]
 
 # Funzione per ottenere i membri della categoria
 def getcatmembers(cat, fromwiki)
-    pagelist = HTTParty.get("#{fromwiki}?action=query&list=categorymembers&cmtitle=#{CGI.escape(cat)}&format=json&cmlimit=max", uri_adapter: Addressable::URI).to_a
+    pagelist = HTTParty.get("#{fromwiki}?action=query&list=categorymembers&cmtitle=#{CGI.escape(cat)}&format=json&cmlimit=max",
+                            uri_adapter: Addressable::URI).to_a
     unless pagelist.empty?
         if pagelist[2].nil?
             pagelist = pagelist[1][1]['categorymembers']
@@ -51,7 +54,15 @@ def getcatmembers(cat, fromwiki)
             unless pagelist.nil?
             while continue == '-||'
                 puts 'Ottengo la continuazione della categoria...'
-                new_pagelist = HTTParty.get(fromwiki, query: {action: :query, list: :categorymembers, cmtitle: CGI.escape(cat), cmlimit: 500, cmdir: :newer, cmcontinue: cmcontinue, format: :json }, uri_adapter: Addressable::URI).to_a
+                new_pagelist = HTTParty.get(fromwiki,
+                                            query: {action: :query, 
+                                                    list: :categorymembers, 
+                                                    cmtitle: CGI.escape(cat),
+                                                    cmlimit: 500,
+                                                    cmdir: :newer,
+                                                    cmcontinue: cmcontinue,
+                                                    format: :json },
+                                            uri_adapter: Addressable::URI).to_a
                 unless new_pagelist.nil?
                 if new_pagelist[2].nil?
                     new_pagelist = new_pagelist[1][1]['categorymembers']
@@ -72,8 +83,10 @@ def getcatmembers(cat, fromwiki)
         return pagelist
     end
 end
+
 # recupera la lista delle categorie con pagine da cancellare
-catlist = HTTParty.get("#{fromwiki}?action=query&list=categorymembers&cmtitle=#{CGI.escape(importcat)}&format=json&cmlimit=max", uri_adapter: Addressable::URI).to_a[2][1]['categorymembers']
+catlist = HTTParty.get("#{fromwiki}?action=query&list=categorymembers&cmtitle=#{CGI.escape(importcat)}&format=json&cmlimit=max",
+                       uri_adapter: Addressable::URI).to_a[2][1]['categorymembers']
 catlist.reject! { |cat| cat["ns"] != 14 }
 totalcontain = []
 catlist.each do |cat|
