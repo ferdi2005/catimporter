@@ -1,3 +1,5 @@
+#!/usr/bin/env ruby
+
 require 'httparty'
 require 'addressable'
 require 'mediawiki_api'
